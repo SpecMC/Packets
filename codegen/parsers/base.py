@@ -1,5 +1,7 @@
 from pyparsing import *
 
 
-identifier = Word(alphas, alphanums)
-literal = Word(alphanums)
+identifier = pyparsing_common.identifier("identifier*")
+number = pyparsing_common.number
+string = "\"" + ZeroOrMore(CharsNotIn("\"")) + "\""
+literal = (number | string)("literal*")

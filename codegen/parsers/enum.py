@@ -1,18 +1,18 @@
 from pyparsing import *
 
-from .base import identifier
+from .base import identifier, literal
 from .types import type
 
 
-enum_field = identifier + Optional("=" + identifier | )
+enum_field = identifier + Optional("=" + Word(nums)("enum_field_value*"))
 
 enum = (
     Keyword("enum")
-    + identifier
+    + identifier("enum_name*")
     + "("
     + type
     + ")"
     + "{"
-    + ZeroOrMore(Word(alphanums) + Word(alphanums))
+    + ZeroOrMore(enum_field)("enum_fields*")
     + "}"
-)
+)("enum*")

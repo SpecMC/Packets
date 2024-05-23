@@ -23,7 +23,7 @@ type = primitive | String | Nbt
 List = Keyword("List") + "[" + type + "," + Word(nums) + "]"
 type = primitive | String | List | Nbt
 List = Keyword("List") + "[" + type + "," + Word(nums) + "]"
-type = primitive | String | List | Nbt
+type = (primitive | String | List | Nbt)("type*")
 
 # With this you technically you can't create triple-nested lists, but you won't need that in the protocol anyway.
 
