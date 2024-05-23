@@ -1,10 +1,10 @@
 use proc_macro::TokenStream;
 use proc_macro2::Span;
-use quote::{quote, IdentFragment};
+use quote::{quote, TokenStreamExt};
 use syn::{
     self, braced, parenthesized,
-    parse::{Parse, ParseBuffer, ParseStream},
-    Ident, LitInt, Token, parse_macro_input,
+    parse::{Parse, ParseStream},
+    parse_macro_input, Ident, LitInt, Token,
 };
 
 #[derive(Debug)]
@@ -52,7 +52,7 @@ enum DefaultType {
     F64,
     Nbt,
     // TODO String,
-    // TODO List(Box<DefaultType>, )
+    // TODO List(Box<DefaultType>, ),
     Integer(IntegerType),
 }
 impl Parse for DefaultType {
@@ -111,15 +111,58 @@ impl Parse for Enum {
     }
 }
 
-#[proc_macro]
-pub fn parse_enum(input: TokenStream) -> TokenStream {
-    let input: Enum = parse_macro_input!(input as Enum);
+struct ProtocolDef {
+    enums: Vec<Enum>,
+    // TODO types, packets
+}
+impl Parse for ProtocolDef {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let mut enums: Vec<Enum> = vec![];
+        while !input.is_empty() {
+            if input.peek(Token![enum]) {
+                enums.push(input.parse()?);
+            } else {
+                return Err(syn::Error::new(input.span(), "Invalid token"));
+            }
+        }
+        Ok(ProtocolDef { enums })
+    }
+}
 
-    println!("{:?}", input.name.to_string());
-    println!("{:?}", input.ty);
-    for field in input.fields {
-        println!("{:?}", field.name.to_string());
+#[proc_macro]
+pub fn protocol_def(input: TokenStream) -> TokenStream {
+    let input: ProtocolDef = parse_macro_input!(input as ProtocolDef);
+    let mut enum_names = vec![];
+    let mut enum_types = vec![];
+    let mut enum_fields = vec![];
+    let mut enum_field_values = vec![];
+
+    for e in input.enums {
+        enum_names.push(e.name);
+        enum_types.push(e.ty);
+        let mut i: isize = 0;
+        let mut fields = vec![];
+        let mut field_values = vec![];
+        for field in e.fields {
+            fields.push(field.name);
+            if let Some(value) = &field.value {
+                i = value.base10_parse().unwrap();
+            }
+            field_values.push(i);
+            i += 1;
+        }
+        enum_fields.push(fields);
+        enum_field_values.push(field_values);
     }
 
-    quote! {}.into()
+    quote! {
+        #(
+            enum #enum_names {
+                #(
+                    #enum_fields = #enum_field_values
+                ),*
+            }
+        )*
+    }
+    .into()
 }
