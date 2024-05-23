@@ -1,7 +1,7 @@
 use macros::parse_enum;
 
 fn main() {
-    parse_enum!{
+    parse_enum! {
         enum ASD(VarInt) {
             A
             B
