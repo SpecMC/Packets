@@ -20,10 +20,6 @@ while line < len(contents):
     if comment != -1:
         contents[line] = contents[line][:comment]
 
-    if contents[line] == "":
-        contents.pop(line)
-        line -= 1
-
     line += 1
 contents = "\n".join(contents)
 
