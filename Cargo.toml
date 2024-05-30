@@ -1,3 +1,0 @@
-[workspace]
-members = ["specmc-protocol", "specmc-protocol/macros"]
-resolver = "2"
