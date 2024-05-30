@@ -34,11 +34,13 @@ tokens = tokenize(contents)
 #         print(*tokens[token : token + 2])
 #     token += 1
 
-print(ProtocolEnum.parse(tokens))
-print(ProtocolEnum.parse(tokens))
-print(ProtocolEnum.parse(tokens))
-print(ProtocolEnum.parse(tokens))
-print(ProtocolEnum.parse(tokens))
-print(ProtocolEnum.parse(tokens))
-print(ProtocolEnum.parse(tokens))
-# print(contents)
+while True:
+    try:
+        enum = ProtocolEnum.parse(tokens)
+        generated = f"enum {enum.name} {{"
+        for name, value in enum.fields.items():
+            generated += f"\n    {name} = {value},"
+        generated += "\n}"
+
+        print(generated)
+    except: break
