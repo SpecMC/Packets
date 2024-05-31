@@ -9,11 +9,11 @@ if len(sys.argv) != 2:
     exit(1)
 
 with open(sys.argv[1], encoding="utf-8") as f:
-    contents = f.read()
+    contents: str = f.read()
 
 
 # Remove comments
-contents = contents.splitlines()
+contents: list[str] = contents.splitlines()
 line = 0
 while line < len(contents):
     comment = contents[line].find("//")
@@ -21,26 +21,31 @@ while line < len(contents):
         contents[line] = contents[line][:comment]
 
     line += 1
-contents = "\n".join(contents)
+contents: str = "\n".join(contents)
 
 
-tokens = tokenize(contents)
-# print(tokens)
+# Tokenize
+tokens: list[str] = tokenize(contents)
 
 
-# token = 0
-# while token < len(tokens):
-#     if tokens[token] in ["enum", "type", "packet"]:
-#         print(*tokens[token : token + 2])
-#     token += 1
-
+# Parse and generate code
+generated: str = ""
 while True:
     try:
-        enum = ProtocolEnum.parse(tokens)
-        generated = f"enum {enum.name} {{"
-        for name, value in enum.fields.items():
-            generated += f"\n    {name} = {value},"
-        generated += "\n}"
+        enum: ProtocolEnum = ProtocolEnum.parse(tokens)
+        generated += "enum " + enum.name + "{"
+        field_value: int = 0
+        for i, (name, value) in enumerate(enum.fields.items()):
+            if i != 0:
+                generated += ","
+            generated += name
+            if field_value != value:
+                generated += f"={value}"
+                field_value = value
+            field_value += 1
+        generated += "}"
+    except:
+        if len(tokens) == 0:
+            break
 
-        print(generated)
-    except: break
+print(generated)

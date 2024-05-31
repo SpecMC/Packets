@@ -7,7 +7,7 @@ enum State(i32) {
 
 enum NextState(VarInt) {
     Status = 1
-    Login = 2
+    Login
 }
 enum Mouse(i8) {
     LeftClick

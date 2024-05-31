@@ -14,7 +14,8 @@ class Parse(metaclass=abc.ABCMeta):
         Parse the given tokens and return an object.
 
         Args:
-            tokens (list[str]): The tokens to parse. This method consumes tokens from the list.
+            tokens (list[str]): The tokens to parse. This method consumes tokens from the list,
+                                even if it fails.
 
         Returns:
             object: The parsed object.
