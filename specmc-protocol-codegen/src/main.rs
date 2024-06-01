@@ -31,7 +31,7 @@ fn main() {
 
     let mut tokens: Vec<String> = "type a { i32 a }"
         .split_whitespace()
-        .map(|str| str.to_string())
+        .map(|str| str.to_string()) // TODO
         .collect();
     tokens.reverse();
     println!("{:?}", CustomType::parse(&mut tokens));
