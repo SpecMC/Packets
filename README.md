@@ -6,13 +6,13 @@ Primitives:
 -   `bool`: Boolean.
 -   `u8`, `u16`, `u32`, `u64`: Unsigned integers of size 8, 16, 32 and 64 bits respectively.
 -   `i8`, `i16`, `i32`, `i64`: Signed integers of size 8, 16, 32 and 64 bits respectively.
--   `f32`, `f64`: Floating point numbers of size 32 and 64 bits respectively.
 -   `VarInt`, `VarLong`: Regular signed integers of size 32 and 64 bits respectively, but encoded in the LEB128 format.
+-   `f32`, `f64`: Floating point numbers of size 32 and 64 bits respectively.
 
 Other types:
--   `Nbt`: NBT encoded data. Note that in some versions NBT is gzip compressed.
 -   `String`: UTF-8 encoded string prefixed with its size in bytes as VarInt. The maximum length is 32767. Use `String[n]` to explicitly specify the length.
--   `List[type, n]`: A list, where `type` is the type of the elements and `n` is the number of elements. `n` can also be an identifier, in which case the number of elements is to be determined at runtime.
+-   `List[type; n]`: A list, where `type` is the type of the elements and `n` is the number of elements. `n` can also be an identifier, in which case the number of elements is to be determined at runtime.
+-   `Nbt`: NBT encoded data. Note that in some versions NBT is gzip compressed.
 
 ## Enums
 
