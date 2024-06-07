@@ -25,8 +25,6 @@ macro_rules! ensure_tokens {
     };
 }
 
-// TODO verify identifiers
-
 #[derive(Debug, Error)]
 pub enum ParseError {
     #[error("Unexpected EOF")]

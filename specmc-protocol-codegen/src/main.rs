@@ -4,6 +4,8 @@ mod tokenize;
 use parse::{CustomType, DefaultType, Enum, Parse};
 use tokenize::tokenize;
 
+// TODO keep comments, useful for documentation
+
 fn main() {
     // let args: Vec<String> = std::env::args().collect();
     //
@@ -31,7 +33,7 @@ fn main() {
 
     let mut tokens: Vec<String> = "type a { i32 a }"
         .split_whitespace()
-        .map(|str| str.to_string()) // TODO
+        .map(str::to_string)
         .collect();
     tokens.reverse();
     println!("{:?}", CustomType::parse(&mut tokens));
