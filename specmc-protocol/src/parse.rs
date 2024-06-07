@@ -130,7 +130,7 @@ impl Parse for DefaultType {
 
 #[derive(Debug)]
 pub struct Identifier {
-    name: String,
+    value: String,
 }
 impl Parse for Identifier {
     fn parse(tokens: &mut Vec<String>) -> Result<Self, ParseError> {
@@ -162,7 +162,7 @@ impl Parse for Identifier {
             }
         );
 
-        Ok(Identifier { name })
+        Ok(Identifier { value: name })
     }
 }
 

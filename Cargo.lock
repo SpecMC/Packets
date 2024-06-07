@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "specmc-protocol-codegen"
+name = "specmc-protocol"
 version = "0.1.0"
 dependencies = [
  "thiserror",
