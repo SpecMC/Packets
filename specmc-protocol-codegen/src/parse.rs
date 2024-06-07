@@ -1,3 +1,5 @@
+use std::str::Chars;
+
 use thiserror::Error;
 
 macro_rules! ensure {
@@ -13,7 +15,10 @@ macro_rules! ensure_tokens {
         $(
             ensure!(
                 $tokens.last().unwrap() == $token,
-                ParseError::InvalidToken($tokens.pop().unwrap())
+                ParseError::InvalidToken {
+                    token: $tokens.last().unwrap().clone(),
+                    error: format!("Expected {}", $token),
+                }
             );
             $tokens.pop();
         )+
@@ -27,8 +32,8 @@ pub enum ParseError {
     #[error("Unexpected EOF")]
     EndOfFile,
 
-    #[error("Invalid token: {0}")]
-    InvalidToken(String),
+    #[error("Invalid token: {token}")]
+    InvalidToken { token: String, error: String },
 }
 
 pub trait Parse
@@ -69,7 +74,10 @@ impl Parse for IntegerType {
             "i64" => Ok(I64),
             "VarInt" => Ok(VarInt),
             "VarLong" => Ok(VarLong),
-            token => Err(ParseError::InvalidToken(token.to_string())),
+            token => Err(ParseError::InvalidToken {
+                token: token.to_string(),
+                error: "Invalid integer type".to_string(),
+            }),
         }
     }
 }
@@ -110,14 +118,59 @@ impl Parse for DefaultType {
             }
             // TODO "List" => Ok(List),
             "Nbt" => Ok(Nbt),
-            token => Ok(Integer(IntegerType::parse(&mut vec![token.to_string()])?)),
+            token => Ok(Integer(
+                IntegerType::parse(&mut vec![token.to_string()]).map_err(|_| {
+                    ParseError::InvalidToken {
+                        token: token.to_string(),
+                        error: "Invalid type".to_string(),
+                    }
+                })?,
+            )),
         }
     }
 }
 
 #[derive(Debug)]
-pub struct Enum {
+pub struct Identifier {
     name: String,
+}
+impl Parse for Identifier {
+    fn parse(tokens: &mut Vec<String>) -> Result<Self, ParseError> {
+        ensure!(!tokens.is_empty(), ParseError::EndOfFile);
+
+        let name: String = tokens.pop().unwrap();
+
+        ensure!(
+            !name.is_empty(),
+            ParseError::InvalidToken {
+                token: name,
+                error: "Empty identifier".to_string()
+            }
+        );
+
+        let mut chars: Chars = name.chars();
+        ensure!(
+            chars.next().unwrap().is_ascii_alphabetic(),
+            ParseError::InvalidToken {
+                token: name,
+                error: "Identifiers must start with a letter".to_string()
+            }
+        );
+        ensure!(
+            chars.all(|c| c.is_ascii_alphanumeric() || c == '_'),
+            ParseError::InvalidToken {
+                token: name,
+                error: "Identifiers can only contain letters, numbers, and underscores".to_string()
+            }
+        );
+
+        Ok(Identifier { name })
+    }
+}
+
+#[derive(Debug)]
+pub struct Enum {
+    name: Identifier,
     ty: IntegerType,
     variants: Vec<(String, isize)>,
 }
@@ -126,7 +179,7 @@ impl Parse for Enum {
         ensure!(tokens.len() >= 6, ParseError::EndOfFile);
 
         ensure_tokens!(tokens, "enum");
-        let name: String = tokens.pop().unwrap();
+        let name: Identifier = Identifier::parse(tokens)?;
         ensure_tokens!(tokens, "(");
         let ty: IntegerType = IntegerType::parse(tokens)?;
         ensure_tokens!(tokens, ")", "{");
@@ -141,7 +194,10 @@ impl Parse for Enum {
                 ensure!(tokens.len() >= 2, ParseError::EndOfFile);
                 tokens.pop();
                 let value: String = tokens.pop().unwrap();
-                i = value.parse().map_err(|_| ParseError::InvalidToken(value))?;
+                i = value.parse().map_err(|_| ParseError::InvalidToken {
+                    token: value,
+                    error: "Invalid value".to_string(),
+                })?;
             }
 
             variants.push((name, i));
@@ -157,7 +213,7 @@ impl Parse for Enum {
 
 #[derive(Debug)]
 pub struct Field {
-    name: String,
+    name: Identifier,
     ty: DefaultType,
     condition: Option<String>,
 }
@@ -166,7 +222,7 @@ impl Parse for Field {
         ensure!(tokens.len() >= 2, ParseError::EndOfFile);
 
         let ty: DefaultType = DefaultType::parse(tokens)?;
-        let name: String = tokens.pop().unwrap();
+        let name: Identifier = Identifier::parse(tokens)?;
 
         Ok(Field {
             name,
@@ -179,7 +235,7 @@ impl Parse for Field {
 // TODO
 #[derive(Debug)]
 pub struct CustomType {
-    name: String,
+    name: Identifier,
     fields: Vec<Field>,
 }
 impl Parse for CustomType {
@@ -187,7 +243,7 @@ impl Parse for CustomType {
         ensure!(tokens.len() >= 3, ParseError::EndOfFile);
 
         ensure_tokens!(tokens, "type");
-        let name: String = tokens.pop().unwrap();
+        let name: Identifier = Identifier::parse(tokens)?;
         ensure_tokens!(tokens, "{");
 
         let mut fields: Vec<Field> = Vec::new();
