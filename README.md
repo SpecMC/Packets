@@ -1,4 +1,5 @@
-# Protocol
+# SpecMC Protocol
+A library for parsing Minecraft protocol specification.
 
 ## Default types
 
