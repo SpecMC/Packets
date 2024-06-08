@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["TheAIguy_"]
 edition = "2021"
 description = "A library for parsing Minecraft protocol specification."
+repository = "https://github.com/SpecMC/Protocol"
 license = "MIT"
 
 [dependencies]
