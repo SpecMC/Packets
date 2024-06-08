@@ -1,3 +1,11 @@
-[workspace]
-members = ["specmc-protocol"]
-resolver = "2"
+[package]
+name = "specmc-protocol"
+version = "0.1.0"
+authors = ["TheAIguy_"]
+edition = "2021"
+description = "A library for parsing Minecraft protocol specification."
+license = "MIT"
+
+[dependencies]
+specmc-base = "0.1.2"
+strtoint = "0.1.0"
