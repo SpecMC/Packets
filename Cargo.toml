@@ -1,12 +1,13 @@
 [package]
 name = "specmc-protocol"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["TheAIguy_"]
 edition = "2021"
 description = "A library for parsing Minecraft protocol specification."
 repository = "https://github.com/SpecMC/Protocol"
 license = "MIT"
+exclude = ["/spec"]
 
 [dependencies]
-specmc-base = "0.1.4"
+specmc-base = "0.1.5"
 strtoint = "0.1.0"
