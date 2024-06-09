@@ -1,3 +1,5 @@
+//! A library for parsing Minecraft protocol specification.
+
 pub mod base;
 pub mod enums;
 pub mod packets;
