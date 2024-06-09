@@ -9,7 +9,7 @@ use enums::Enum;
 use packets::Packet;
 use types::CustomType;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Protocol {
     pub enums: Vec<Enum>,
     pub types: Vec<CustomType>,
@@ -45,5 +45,15 @@ impl Parse for Protocol {
             types,
             packets,
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[macro_export]
+    macro_rules! test_parse {
+        ($tokens:ident, $ty:ty, $value:expr) => {
+            assert_eq!(<$ty>::parse(&mut $tokens), $value);
+        };
     }
 }

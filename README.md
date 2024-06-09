@@ -16,7 +16,7 @@ Other types:
 
 -   `String`: UTF-8 encoded string prefixed with its size in bytes as VarInt. The maximum length is 32767. Use `String[n]` to explicitly specify the length.
 -   `List[type; n]`: A list, where `type` is the type of the elements and `n` is the number of elements. `n` can also be an identifier, in which case the number of elements is to be determined at runtime.
--   `Nbt`: NBT encoded data. Note that in some versions NBT is gzip compressed.
+-   `Nbt`: NBT encoded data.
 
 ## Enums
 
@@ -41,14 +41,14 @@ enum ABC(i32) {
 A packet definition consists of a packet name, followed by its direction, state and id, and a list of fields.
 Enums will be represented as the type specified in the enum definition.
 `if` statements can be used to define conditional fields.
-Fields of primitive types can be set to equal a literal or a constant. They are still present, but the value is used for validation.
+Fields of primitive types can be set to equal a literal or another field or constant.
 
 Example:
 
 ```
 packet SomePacket(serverbound, Play, 0x42) {
     u32 length
-    List[u8, length] data
+    List[u8; length] data
     if (length > 0) {
         String message
     }

@@ -7,8 +7,8 @@ type TestType {
     String message
 }
 packet TestPacket(serverbound, Play, 0x42) {
-    u32 length
-    List[u8; length] data
+    VarInt length = len(data)
+    List[u8] data
     if (length > 0) {
         TestType message
     }

@@ -5,7 +5,7 @@ use specmc_base::{
 
 use crate::base::{BaseType, FieldList};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
     BaseType(BaseType),
     CustomType(Identifier),
@@ -20,7 +20,7 @@ impl Parse for Type {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct CustomType {
     pub name: Identifier,
     pub fields: FieldList,
@@ -34,5 +34,83 @@ impl Parse for CustomType {
         ensure_tokens!(tokens, "}");
 
         Ok(CustomType { name, fields })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use specmc_base::tokenize;
+
+    use crate::{
+        base::{Field, IntegerType},
+        test_parse,
+    };
+
+    use super::*;
+
+    #[test]
+    fn test_type() {
+        let mut tokens: Vec<String> = tokenize!("bool i32 TestType");
+
+        test_parse!(tokens, Type, Ok(Type::BaseType(BaseType::Bool)));
+        test_parse!(
+            tokens,
+            Type,
+            Ok(Type::BaseType(BaseType::Integer(IntegerType::I32)))
+        );
+        test_parse!(
+            tokens,
+            Type,
+            Ok(Type::CustomType(Identifier("TestType".to_string())))
+        );
+
+        assert!(tokens.is_empty());
+        test_parse!(tokens, Type, Err(ParseError::EndOfFile));
+    }
+
+    #[test]
+    fn test_custom_type() {
+        let mut tokens: Vec<String> = tokenize!(
+            "
+            type TestType {
+                i32 a
+                bool b
+                if (b) {
+                    i32 c
+                }
+            }
+            "
+        );
+
+        test_parse!(
+            tokens,
+            CustomType,
+            Ok(CustomType {
+                name: Identifier("TestType".to_string()),
+                fields: FieldList(vec![
+                    Field {
+                        ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
+                        name: Identifier("a".to_string()),
+                        value: None,
+                        condition: None
+                    },
+                    Field {
+                        ty: Type::BaseType(BaseType::Bool),
+                        name: Identifier("b".to_string()),
+                        value: None,
+                        condition: None
+                    },
+                    Field {
+                        ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
+                        name: Identifier("c".to_string()),
+                        value: None,
+                        condition: Some("( b )".to_string())
+                    }
+                ])
+            })
+        );
+
+        assert!(tokens.is_empty());
+        test_parse!(tokens, CustomType, Err(ParseError::EndOfFile));
     }
 }
