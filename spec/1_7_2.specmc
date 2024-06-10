@@ -86,20 +86,20 @@ packet LoginStart(serverbound, Login, 0x00) {
     String name
 }
 packet EncryptionResponse(serverbound, Login, 0x01) {
-    u16 shared_secret_length
-    List[u8; shared_secret_length] shared_secret
-    u16 verify_token_length
-    List[u8; verify_token_length] verify_token
+    u16 shared_secret_length = len(shared_secret)
+    List[u8] shared_secret
+    u16 verify_token_length = len(verify_token)
+    List[u8] verify_token
 }
 packet Disconnect(clientbound, Login, 0x00) {
     String json_data
 }
 packet EncryptionRequest(clientbound, Login, 0x01) {
     String server_id
-    u16 public_key_length
-    List[u8; public_key_length] public_key
-    u16 verify_token_length
-    List[u8; verify_token_length] verify_token
+    u16 public_key_length = len(public_key)
+    List[u8] public_key
+    u16 verify_token_length = len(verify_token)
+    List[u8] verify_token
 }
 packet LoginSuccess(clientbound, Login, 0x02) {
     String uuid
