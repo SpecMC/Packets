@@ -3,6 +3,8 @@
 pub mod base;
 pub mod enums;
 pub mod packets;
+#[cfg(feature = "spec")]
+pub mod spec;
 pub mod types;
 
 use specmc_base::parse::{Parse, ParseError};
