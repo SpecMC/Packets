@@ -8,7 +8,7 @@ repository = "https://github.com/SpecMC/Protocol"
 license = "MIT"
 
 [dependencies]
-specmc-base = "*"
+specmc-base = "0.1.10"
 strtoint = "0.1.0"
 
 [features]
