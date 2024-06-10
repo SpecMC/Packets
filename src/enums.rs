@@ -7,8 +7,8 @@ use crate::base::IntegerType;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Variant {
-    name: Identifier,
-    value: Option<isize>,
+    pub name: Identifier,
+    pub value: Option<isize>,
 }
 impl Parse for Variant {
     fn parse(tokens: &mut Vec<String>) -> Result<Self, ParseError> {
