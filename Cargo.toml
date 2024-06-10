@@ -1,6 +1,6 @@
 [package]
 name = "specmc-protocol"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["TheAIguy_"]
 edition = "2021"
 description = "A library for parsing Minecraft protocol specification."
