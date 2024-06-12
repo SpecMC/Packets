@@ -86,7 +86,7 @@ pub enum BaseType {
         length: Option<usize>,
     },
     Nbt,
-    Option(Box<Type>),
+    // Option(Box<Type>),
 }
 impl Parse for BaseType {
     fn parse(tokens: &mut Vec<String>) -> Result<Self, ParseError> {
@@ -129,12 +129,12 @@ impl Parse for BaseType {
                 Ok(List { ty, length })
             }
             "Nbt" => Ok(Nbt),
-            "Option" => {
-                ensure_tokens!(tokens, "[");
-                let ty: Box<Type> = Box::new(Type::parse(tokens)?);
-                ensure_tokens!(tokens, "]");
-                Ok(Option(ty))
-            }
+            // "Option" => {
+            //     ensure_tokens!(tokens, "[");
+            //     let ty: Box<Type> = Box::new(Type::parse(tokens)?);
+            //     ensure_tokens!(tokens, "]");
+            //     Ok(Option(ty))
+            // }
             token => {
                 tokens.push(token.to_string());
                 Ok(Integer(IntegerType::parse(tokens).map_err(|_| {
@@ -292,9 +292,8 @@ mod tests {
 
     #[test]
     fn test_base_type() {
-        let mut tokens: Vec<String> = tokenize!(
-            "bool VarInt f32 f64 String String[42] List[i32] List[u8; 42] Nbt Option[VarInt] Unknown"
-        );
+        let mut tokens: Vec<String> =
+            tokenize!("bool VarInt f32 f64 String String[42] List[i32] List[u8; 42] Nbt Unknown");
 
         test_parse!(tokens, BaseType, Ok(BaseType::Bool));
         test_parse!(tokens, BaseType, Ok(BaseType::Integer(IntegerType::VarInt)));
@@ -319,13 +318,13 @@ mod tests {
             })
         );
         test_parse!(tokens, BaseType, Ok(BaseType::Nbt));
-        test_parse!(
-            tokens,
-            BaseType,
-            Ok(BaseType::Option(Box::new(Type::BaseType(
-                BaseType::Integer(IntegerType::VarInt)
-            ))))
-        );
+        // test_parse!(
+        //     tokens,
+        //     BaseType,
+        //     Ok(BaseType::Option(Box::new(Type::BaseType(
+        //         BaseType::Integer(IntegerType::VarInt)
+        //     ))))
+        // );
 
         test_parse!(
             tokens,
