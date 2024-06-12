@@ -92,20 +92,20 @@ mod tests {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                         name: Identifier("a".to_string()),
                         value: None,
-                        condition: None
+                        conditions: vec![],
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Bool),
                         name: Identifier("b".to_string()),
                         value: None,
-                        condition: None
+                        conditions: vec![],
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                         name: Identifier("c".to_string()),
                         value: None,
-                        condition: Some("( b )".to_string())
-                    }
+                        conditions: vec!["b".to_string()],
+                    },
                 ])
             })
         );

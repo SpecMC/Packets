@@ -126,41 +126,41 @@ mod tests {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                         name: Identifier("number".to_string()),
                         value: None,
-                        condition: None
+                        conditions: vec![],
                     },
                     Field {
                         ty: Type::BaseType(BaseType::String { length: None }),
                         name: Identifier("message".to_string()),
                         value: None,
-                        condition: None
+                        conditions: vec![],
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Bool),
                         name: Identifier("flag".to_string()),
                         value: None,
-                        condition: None
+                        conditions: vec![],
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                         name: Identifier("other".to_string()),
                         value: None,
-                        condition: Some("( flag )".to_string())
+                        conditions: vec!["flag".to_string()],
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::VarInt)),
                         name: Identifier("length".to_string()),
                         value: Some(Value::Length(Identifier("data".to_string()))),
-                        condition: None
+                        conditions: vec![],
                     },
                     Field {
                         ty: Type::BaseType(BaseType::List {
                             ty: Box::new(Type::BaseType(BaseType::Integer(IntegerType::U8))),
-                            length: None
+                            length: None,
                         }),
                         name: Identifier("data".to_string()),
                         value: None,
-                        condition: None
-                    }
+                        conditions: vec![],
+                    },
                 ])
             })
         );

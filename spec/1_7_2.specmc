@@ -37,12 +37,12 @@ enum Animation(i8) {
     EatFood
     CriticalEffect
     MagicCriticalEffect
-    Unknown
-    Crouch
+    Unknown = 102
+    Crouch = 104
     Uncrouch
 }
 enum EntityAction(i8) {
-    Crouch
+    Crouch = 1
     Uncrouch
     LeaveBed
     StartSprinting

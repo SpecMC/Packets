@@ -58,6 +58,6 @@ mod tests {
     macro_rules! test_parse {
         ($tokens:ident, $ty:ty, $value:expr) => {
             assert_eq!(<$ty>::parse(&mut $tokens), $value);
-        };
+        }
     }
 }

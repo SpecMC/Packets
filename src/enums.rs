@@ -101,7 +101,7 @@ mod tests {
             Variant,
             Ok(Variant {
                 name: Identifier("A".to_string()),
-                value: Some(42)
+                value: Some(42),
             })
         );
         test_parse!(
@@ -109,7 +109,7 @@ mod tests {
             Variant,
             Ok(Variant {
                 name: Identifier("B".to_string()),
-                value: None
+                value: None,
             })
         );
         test_parse!(
@@ -117,7 +117,7 @@ mod tests {
             Variant,
             Ok(Variant {
                 name: Identifier("C".to_string()),
-                value: Some(-123)
+                value: Some(-123),
             })
         );
 
@@ -126,7 +126,7 @@ mod tests {
             Variant,
             Err(ParseError::InvalidToken {
                 token: "Float(1.5)".to_string(),
-                error: "Invalid variant value".to_string()
+                error: "Invalid variant value".to_string(),
             })
         );
         assert!(tokens.is_empty());
@@ -169,19 +169,19 @@ mod tests {
                 variants: vec![
                     Variant {
                         name: Identifier("A".to_string()),
-                        value: Some(42)
+                        value: Some(42),
                     },
                     Variant {
                         name: Identifier("B".to_string()),
-                        value: Some(43)
+                        value: Some(43),
                     },
                     Variant {
                         name: Identifier("C".to_string()),
-                        value: Some(-123)
+                        value: Some(-123),
                     },
                     Variant {
                         name: Identifier("D".to_string()),
-                        value: Some(1)
+                        value: Some(1),
                     },
                 ]
             })
@@ -192,7 +192,7 @@ mod tests {
             Enum,
             Err(ParseError::InvalidToken {
                 token: "256".to_string(),
-                error: "Enum has incompatible type".to_string()
+                error: "Enum has incompatible type".to_string(),
             })
         );
         assert!(tokens.pop().unwrap() == "}");
@@ -201,7 +201,7 @@ mod tests {
             Enum,
             Err(ParseError::InvalidToken {
                 token: "42".to_string(),
-                error: "Enum has duplicate value".to_string()
+                error: "Enum has duplicate value".to_string(),
             })
         );
         assert!(tokens.pop().unwrap() == "}");
@@ -210,7 +210,7 @@ mod tests {
             Enum,
             Err(ParseError::InvalidToken {
                 token: "Float(42.0)".to_string(),
-                error: "Invalid variant value".to_string()
+                error: "Invalid variant value".to_string(),
             })
         );
         assert!(tokens.pop().unwrap() == "}");

@@ -178,7 +178,7 @@ pub struct Field {
     pub ty: Type,
     pub name: Identifier,
     pub value: Option<Value>,
-    pub condition: Option<String>,
+    pub conditions: Vec<String>,
 }
 impl Parse for Field {
     fn parse(tokens: &mut Vec<String>) -> Result<Self, ParseError> {
@@ -195,7 +195,7 @@ impl Parse for Field {
             name,
             ty,
             value,
-            condition: None,
+            conditions: vec![],
         })
     }
 }
@@ -220,16 +220,20 @@ impl Parse for FieldList {
                 "if" => {
                     ensure_tokens!(tokens, "(");
 
-                    let mut condition: String = "(".to_string();
+                    let mut condition: String = "".to_string();
                     let mut paren_count: usize = 1;
                     while !tokens.is_empty() && paren_count != 0 {
                         if tokens.last().unwrap() == "(" {
                             paren_count += 1;
                         } else if tokens.last().unwrap() == ")" {
                             paren_count -= 1;
+                        } else {
+                            if !condition.is_empty() {
+                                condition += " ";
+                            }
+                            condition += &tokens.last().unwrap();
                         }
-                        condition += " ";
-                        condition += &tokens.pop().unwrap();
+                        tokens.pop();
                     }
                     conditions.push(condition);
 
@@ -241,7 +245,7 @@ impl Parse for FieldList {
                     let mut field: Field = Field::parse(tokens)?;
 
                     if !conditions.is_empty() {
-                        field.condition = Some(conditions.join(" && "));
+                        field.conditions = conditions.clone();
                     }
 
                     value.push(field);
@@ -282,7 +286,7 @@ mod tests {
             IntegerType,
             Err(ParseError::InvalidToken {
                 token: "Unknown".to_string(),
-                error: "Invalid integer type".to_string()
+                error: "Invalid integer type".to_string(),
             })
         );
         assert_eq!(tokens.pop().unwrap(), "Unknown");
@@ -306,7 +310,7 @@ mod tests {
             BaseType,
             Ok(BaseType::List {
                 ty: Box::new(Type::BaseType(BaseType::Integer(IntegerType::I32))),
-                length: None
+                length: None,
             })
         );
         test_parse!(
@@ -314,7 +318,7 @@ mod tests {
             BaseType,
             Ok(BaseType::List {
                 ty: Box::new(Type::BaseType(BaseType::Integer(IntegerType::U8))),
-                length: Some(42)
+                length: Some(42),
             })
         );
         test_parse!(tokens, BaseType, Ok(BaseType::Nbt));
@@ -331,7 +335,7 @@ mod tests {
             BaseType,
             Err(ParseError::InvalidToken {
                 token: "Unknown".to_string(),
-                error: "Invalid type".to_string()
+                error: "Invalid type".to_string(),
             })
         );
         assert_eq!(tokens.pop().unwrap(), "Unknown");
@@ -377,7 +381,7 @@ mod tests {
                 ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                 name: Identifier("first_field".to_string()),
                 value: None,
-                condition: None
+                conditions: vec![],
             })
         );
         test_parse!(
@@ -387,7 +391,7 @@ mod tests {
                 ty: Type::BaseType(BaseType::Nbt),
                 name: Identifier("second_field".to_string()),
                 value: Some(Value::Literal(Literal::Float(42.0))),
-                condition: None
+                conditions: vec![],
             })
         );
         test_parse!(
@@ -397,7 +401,7 @@ mod tests {
                 ty: Type::BaseType(BaseType::Integer(IntegerType::I64)),
                 name: Identifier("third_field".to_string()),
                 value: Some(Value::Length(Identifier("list".to_string()))),
-                condition: None
+                conditions: vec![],
             })
         );
         test_parse!(
@@ -410,7 +414,7 @@ mod tests {
                 }),
                 name: Identifier("list".to_string()),
                 value: None,
-                condition: None
+                conditions: vec![],
             })
         );
 
@@ -440,20 +444,20 @@ mod tests {
                     ty: Type::BaseType(BaseType::Bool),
                     name: Identifier("cond".to_string()),
                     value: None,
-                    condition: None
+                    conditions: vec![],
                 },
                 Field {
                     ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                     name: Identifier("number".to_string()),
                     value: None,
-                    condition: Some("( cond )".to_string())
+                    conditions: vec!["cond".to_string()],
                 },
                 Field {
                     ty: Type::BaseType(BaseType::Integer(IntegerType::U64)),
                     name: Identifier("other".to_string()),
                     value: None,
-                    condition: Some("( !cond )".to_string())
-                }
+                    conditions: vec!["!cond".to_string()],
+                },
             ]))
         );
 
