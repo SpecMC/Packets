@@ -64,6 +64,8 @@ impl Parse for Packet {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashSet;
+
     use specmc_base::tokenize;
 
     use crate::{
@@ -126,31 +128,31 @@ mod tests {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                         name: Identifier("number".to_string()),
                         value: None,
-                        conditions: vec![],
+                        conditions: HashSet::new(),
                     },
                     Field {
                         ty: Type::BaseType(BaseType::String { length: None }),
                         name: Identifier("message".to_string()),
                         value: None,
-                        conditions: vec![],
+                        conditions: HashSet::new(),
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Bool),
                         name: Identifier("flag".to_string()),
                         value: None,
-                        conditions: vec![],
+                        conditions: HashSet::new(),
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                         name: Identifier("other".to_string()),
                         value: None,
-                        conditions: vec!["flag".to_string()],
+                        conditions: HashSet::from_iter(vec!["flag".to_string()]),
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::VarInt)),
                         name: Identifier("length".to_string()),
                         value: Some(Value::Length(Identifier("data".to_string()))),
-                        conditions: vec![],
+                        conditions: HashSet::new(),
                     },
                     Field {
                         ty: Type::BaseType(BaseType::List {
@@ -159,7 +161,7 @@ mod tests {
                         }),
                         name: Identifier("data".to_string()),
                         value: None,
-                        conditions: vec![],
+                        conditions: HashSet::new(),
                     },
                 ])
             })

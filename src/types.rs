@@ -39,6 +39,8 @@ impl Parse for CustomType {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashSet;
+
     use specmc_base::tokenize;
 
     use crate::{
@@ -92,19 +94,19 @@ mod tests {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                         name: Identifier("a".to_string()),
                         value: None,
-                        conditions: vec![],
+                        conditions: HashSet::new(),
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Bool),
                         name: Identifier("b".to_string()),
                         value: None,
-                        conditions: vec![],
+                        conditions: HashSet::new(),
                     },
                     Field {
                         ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                         name: Identifier("c".to_string()),
                         value: None,
-                        conditions: vec!["b".to_string()],
+                        conditions: HashSet::from_iter(vec!["b".to_string()]),
                     },
                 ])
             })

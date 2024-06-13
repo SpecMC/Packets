@@ -1,4 +1,4 @@
-use std::{ops::RangeInclusive, option, string};
+use std::{collections::HashSet, ops::RangeInclusive, option, string};
 
 use specmc_base::{
     ensure_tokens,
@@ -178,7 +178,7 @@ pub struct Field {
     pub ty: Type,
     pub name: Identifier,
     pub value: Option<Value>,
-    pub conditions: Vec<String>,
+    pub conditions: HashSet<String>,
 }
 impl Parse for Field {
     fn parse(tokens: &mut Vec<String>) -> Result<Self, ParseError> {
@@ -195,7 +195,7 @@ impl Parse for Field {
             name,
             ty,
             value,
-            conditions: vec![],
+            conditions: HashSet::new(),
         })
     }
 }
@@ -245,7 +245,7 @@ impl Parse for FieldList {
                     let mut field: Field = Field::parse(tokens)?;
 
                     if !conditions.is_empty() {
-                        field.conditions = conditions.clone();
+                        field.conditions = HashSet::from_iter(conditions.clone());
                     }
 
                     value.push(field);
@@ -381,7 +381,7 @@ mod tests {
                 ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                 name: Identifier("first_field".to_string()),
                 value: None,
-                conditions: vec![],
+                conditions: HashSet::new(),
             })
         );
         test_parse!(
@@ -391,7 +391,7 @@ mod tests {
                 ty: Type::BaseType(BaseType::Nbt),
                 name: Identifier("second_field".to_string()),
                 value: Some(Value::Literal(Literal::Float(42.0))),
-                conditions: vec![],
+                conditions: HashSet::new(),
             })
         );
         test_parse!(
@@ -401,7 +401,7 @@ mod tests {
                 ty: Type::BaseType(BaseType::Integer(IntegerType::I64)),
                 name: Identifier("third_field".to_string()),
                 value: Some(Value::Length(Identifier("list".to_string()))),
-                conditions: vec![],
+                conditions: HashSet::new(),
             })
         );
         test_parse!(
@@ -414,7 +414,7 @@ mod tests {
                 }),
                 name: Identifier("list".to_string()),
                 value: None,
-                conditions: vec![],
+                conditions: HashSet::new(),
             })
         );
 
@@ -444,19 +444,19 @@ mod tests {
                     ty: Type::BaseType(BaseType::Bool),
                     name: Identifier("cond".to_string()),
                     value: None,
-                    conditions: vec![],
+                    conditions: HashSet::new(),
                 },
                 Field {
                     ty: Type::BaseType(BaseType::Integer(IntegerType::I32)),
                     name: Identifier("number".to_string()),
                     value: None,
-                    conditions: vec!["cond".to_string()],
+                    conditions: HashSet::from_iter(vec!["cond".to_string()]),
                 },
                 Field {
                     ty: Type::BaseType(BaseType::Integer(IntegerType::U64)),
                     name: Identifier("other".to_string()),
                     value: None,
-                    conditions: vec!["!cond".to_string()],
+                    conditions: HashSet::from_iter(vec!["!cond".to_string()]),
                 },
             ]))
         );

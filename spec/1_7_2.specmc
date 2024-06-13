@@ -55,12 +55,10 @@ type Slot {
     if (id != -1) {
         i8 count
         i16 damage
-        // if (id == 0x103 || id == 0x105 || id == 0x15A || id == 0x167 || id == 0x10C || id == 0x10D || id == 0x10E || id == 0x10F || id == 0x122 || id == 0x110 || id == 0x111 || id == 0x112 || id == 0x113 || id == 0x123 || id == 0x10B || id == 0x100 || id == 0x101 || id == 0x102 || id == 0x124 || id == 0x114 || id == 0x115 || id == 0x116 || id == 0x117 || id == 0x125 || id == 0x11B || id == 0x11C || id == 0x11D || id == 0x11E || id == 0x126 || id == 0x12A || id == 0x12B || id == 0x12C || id == 0x12D || id == 0x12E || id == 0x12F || id == 0x130 || id == 0x131 || id == 0x132 || id == 0x133 || id == 0x134 || id == 0x135 || id == 0x136 || id == 0x137 || id == 0x138 || id == 0x139 || id == 0x13A || id == 0x13B || id == 0x13C || id == 0x14D) {
-            i16 data_length
-            if (data_length != -1) {
-                Nbt data
-            }
-        // }
+        i16 data_length
+        if (data_length != -1) {
+            Nbt data
+        }
     }
 }
 
