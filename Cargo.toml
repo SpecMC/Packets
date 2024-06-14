@@ -1,6 +1,6 @@
 [package]
 name = "specmc-protocol"
-version = "0.1.9"
+version = "0.1.10"
 authors = ["TheAIguy_"]
 edition = "2021"
 description = "A library for parsing Minecraft protocol specification."
@@ -13,4 +13,4 @@ strtoint = "0.1.0"
 
 [features]
 spec = []
-1_7_2 = ["spec"]
+v1_7_2 = ["spec"]
